@@ -16,4 +16,6 @@ VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='
 
 curl -s $TEMPLATE_URL   | oc process   -n ansible-service-broker   -p DOCKERHUB_ORG="$DOCKERHUB_ORG"   -p ENABLE_BASIC_AUTH="$ENABLE_BASIC_AUTH"   -p NAMESPACE=ansible-service-broker   -p ROUTING_SUFFIX="$ROUTING_SUFFIX"   $VARS -f - | oc create -f -
 
+oc adm policy add-cluster-role-to-user cluster-admin developer
+oc login -u developer'
 
