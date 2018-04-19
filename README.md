@@ -32,6 +32,7 @@ curl -s $TEMPLATE_URL   | oc process   -n ansible-service-broker   -p DOCKERHUB_
 oc adm policy add-cluster-role-to-user cluster-admin developer
 oc login -u developer'
 
-# helps in apb push
+This helps in apb push:
+
 oc annotate route -n ansible-service-broker asb-1338 --overwrite haproxy.router.openshift.io/timeout=300s
 
