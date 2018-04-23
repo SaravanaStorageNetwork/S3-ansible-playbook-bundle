@@ -4,71 +4,60 @@
 # application using an Ansible Playbook Bundle. 
 #############################################################################
 
+---
+- name: Build Storageclass
+  template:
+    src: gluster-s3-storageclass.yaml
+    dest: /tmp/gluster-s3-storageclass.yaml
 
-#############################################################################
-# An OpenShift Origin deployment configuration provides a replication
-# controller, spins up pods, and also provides the ability to transition from
-# one deployment of an image to a new one.
-# https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#deployments-and-deployment-configurations
-#############################################################################
-- name: create deployment config
-  openshift_v1_deployment_config:
-    name: gluster_s3_apb
-    namespace: '{{ namespace }}'
-    labels:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    replicas: 1
-    selector:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    spec_template_metadata_labels:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    containers:
-    - env:
-      image: docker.io/gluster/gluster-object:latest # replace with your application image
-      name: gluster_s3_apb
-      ports:
-      - container_port: 8080
-        protocol: TCP
+- name: Provision Storageclass
+  command: "sed  -e 's/${HEKETI_URL}/heketi-store-project1.cloudapps.mystorage.com/g'  -e 's/${STORAGE_CLASS}/gluster-s3-store/g' -e 's/${NAMESPACE}/store-project1/g' /tmp/gluster-s3-storageclass.yaml | oc create -f  - "
+  register: debug_out
+- name: Show generated storageclass
+  debug:
+    msg: "{{ debug_out.stdout }}"
 
 
-#############################################################################
-# A Kubernetes service serves as an internal load balancer.  It identifies a
-# set of replicated pods in order to proxy the connections it receives to them.
-# https://docs.openshift.org/latest/architecture/core_concepts/pods_and_services.html#services
-#############################################################################
-- name: create gluster_s3_apb service
-  k8s_v1_service:
-    name: gluster_s3_apb
-    namespace: '{{ namespace }}'
-    labels:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    selector:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    ports:
-      - name: web
-        port: 8080
-        target_port: 8080
+- name: Build PVCs
+  template:
+    src: gluster-s3-pvcs.yaml
+    dest: /tmp/gluster-s3-pvcs.yaml
+
+### Debug
+- name: Debug generated PVCs
+  command: cat /tmp/gluster-s3-pvcs.yaml
+  register: debug_out
+- name: Show generated pvc
+  debug:
+    msg: "{{ debug_out.stdout }}"
+
+- name: Provision PVCs
+  command: "sed -e 's/${VOLUME_CAPACITY}/2Gi/g'  -e  's/${STORAGE_CLASS}/gluster-s3-store/g'  /tmp/gluster-s3-pvcs.yaml |  oc create -f - "
+  register: debug_out
+- name: Show generated pvc
+  debug:
+    msg: "{{ debug_out.stdout }}"
 
 
-#############################################################################
-# An OpenShift Origin route exposes a service at a host name, so that external
-# clients can reach it by name. Each route consists of a name, a service
-# selector, and an optional security configuration.
-# https://docs.openshift.org/latest/architecture/core_concepts/routes.html
-#############################################################################
-- name: create gluster_s3_apb route
-  openshift_v1_route:
-    name: gluster_s3_apb
-    namespace: '{{ namespace }}'
-    labels:
-      app: gluster_s3_apb
-      service: gluster_s3_apb
-    to_name: gluster_s3_apb
-    spec_port_target_port: web
+- name: Build templates
+  template:
+    src: gluster-s3-template.yaml
+    dest: /tmp/gluster-s3-template.yaml
 
+### Debug
+- name: Debug generated template
+  command: cat /tmp/gluster-s3-template.yaml
+  register: debug_out
+- name: Show generated template
+  debug:
+    msg: "{{ debug_out.stdout }}"
 
+- name: Provision template
+  command: "oc new-app  deploy/ocp-templates/gluster-s3-template.yaml \
+             --param=S3_ACCOUNT=testvolume  --param=S3_USER=adminuser \
+             --param=S3_PASSWORD=itsmine --param=PVC=gluster-s3-claim \
+             --param=META_PVC=gluster-s3-meta-claim"
+  register: debug_out
+- name: Show generated template
+  debug:
+    msg: "{{ debug_out.stdout }}"

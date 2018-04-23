@@ -1,4 +1,4 @@
-- name: gluster_s3_apb playbook to provision the application
+- name: Playbook to deploy S3 service
   hosts: localhost
   gather_facts: false
   connection: local
@@ -8,3 +8,6 @@
   - role: ansibleplaybookbundle.asb-modules
   - role: provision-gluster_s3_apb
     playbook_debug: false
+  vars:
+    action: provision
+    cluster: glusterfs
