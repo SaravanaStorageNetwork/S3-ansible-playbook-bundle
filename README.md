@@ -17,6 +17,11 @@ firewall-cmd --reload
 
 oc cluster up --public-hostname=10.70.42.192  --service-catalog=true 
 
+oc login -u system:admin
+
+oc new-project ansible-service-broker
+
+
 ROUTING_SUFFIX="10.70.42.192.nip.io"
 
 TEMPLATE_URL=${TEMPLATE_URL:-"https://raw.githubusercontent.com/openshift/ansible-service-broker/master/templates/deploy-ansible-service-broker.template.yaml"}
