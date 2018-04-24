@@ -15,7 +15,7 @@ firewall-cmd --permanent --zone dockerc --add-port 1338/tcp
 firewall-cmd --permanent --zone dockerc --add-port 1338/udp
 firewall-cmd --reload
 
-oc cluster up --public-hostname=10.70.42.192  --service-catalog=true 
+oc cluster up --public-hostname=10.70.42.192  --service-catalog=true  --loglevel=2
 
 oc login -u system:admin
 
