@@ -2,17 +2,24 @@
 GlusterFS S3 ansible playbook bundle(APB)
 
 In the Host:
+
 firewall-cmd --permanent --new-zone dockerc
+
 firewall-cmd --permanent --zone dockerc --add-source 172.17.0.0/16
+
 firewall-cmd --permanent --zone dockerc --add-port 8443/tcp
+
 firewall-cmd --permanent --zone dockerc --add-port 53/udp
+
 firewall-cmd --permanent --zone dockerc --add-port 8053/udp
+
 
 #for apb
 
 firewall-cmd --permanent --zone dockerc --add-port 1338/tcp 
 
 firewall-cmd --permanent --zone dockerc --add-port 1338/udp
+
 firewall-cmd --reload
 
 oc cluster up --public-hostname=10.70.42.192  --service-catalog=true  --loglevel=2
