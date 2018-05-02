@@ -1,6 +1,6 @@
 DOCKERHOST = docker.io
-DOCKERORG = gluster_s3_apb
-IMAGENAME = gluster_s3_apb
+DOCKERORG = gluster-s3-apb
+IMAGENAME = gluster-s3-apb
 TAG = latest
 USER=$(shell id -u)
 PWD=$(shell pwd)

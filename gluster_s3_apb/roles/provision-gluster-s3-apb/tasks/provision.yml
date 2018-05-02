@@ -1,5 +1,5 @@
 #############################################################################
-# Provision gluster_s3_apb
+# Provision gluster-s3-apb
 # This role executes much of the needed functionality to provision an
 # application using an Ansible Playbook Bundle. 
 #############################################################################
