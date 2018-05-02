@@ -11,7 +11,7 @@
     dest: /tmp/gluster-s3-storageclass.yaml
 
 - name: Provision Storageclass
-  command: "sed  -e 's/${HEKETI_URL}/heketi-store-project1.cloudapps.mystorage.com/g'  -e 's/${STORAGE_CLASS}/gluster-s3-store/g' -e 's/${NAMESPACE}/store-project1/g' /tmp/gluster-s3-storageclass.yaml | oc create -f  - "
+  command: "sed  -e 's/${HEKETI_URL}/heketi-storage-glusterfs.router.default.svc.cluster.local/g'  -e 's/${STORAGE_CLASS}/gluster-s3-store/g' -e 's/${NAMESPACE}/glusterfs/g' /tmp/gluster-s3-storageclass.yaml | oc create -f  - "
   register: debug_out
 - name: Show generated storageclass
   debug:
