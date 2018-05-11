@@ -11,4 +11,4 @@ parameters:
   resturl: "http://${HEKETI_URL}"
   restuser: "admin"
   secretNamespace: "${NAMESPACE}"
-  secretName: "heketi-${NAMESPACE}-admin-secret"
+  secretName: "heketi-storage-admin-secret"
