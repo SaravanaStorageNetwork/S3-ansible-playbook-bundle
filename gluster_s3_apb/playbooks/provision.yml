@@ -10,4 +10,4 @@
     playbook_debug: false
   vars:
     action: provision
-    cluster: glusterfs
+    #cluster: glusterfs

@@ -5,13 +5,32 @@
 #############################################################################
 
 ---
+- include: "login.yml"
+
 - name: Build Storageclass
   template:
     src: gluster-s3-storageclass.yaml
     dest: /tmp/gluster-s3-storageclass.yaml
 
+#- name: sleep  for debugging
+#  command: sleep 1000
+
+- name: which oc
+  command: which oc
+  register: debug_out
+- name: Show which oc
+  debug:
+    msg: "{{ debug_out.stdout }}"
+
+- name: show storageclass.yaml
+  command: cat /tmp/gluster-s3-storageclass.yaml
+  register: debug_out
+- name: Show generated storageclass
+  debug:
+    msg: "{{ debug_out.stdout }}"
+
 - name: Provision Storageclass
-  command: "sed  -e 's/${HEKETI_URL}/heketi-storage-glusterfs.router.default.svc.cluster.local/g'  -e 's/${STORAGE_CLASS}/gluster-s3-store/g' -e 's/${NAMESPACE}/glusterfs/g' /tmp/gluster-s3-storageclass.yaml | oc create -f  - "
+  shell: sed  -e 's/${HEKETI_URL}/heketi-storage-glusterfs.router.default.svc.cluster.local/g'  -e 's/${STORAGE_CLASS}/gluster-s3-store/g' -e 's/${NAMESPACE}/glusterfs/g' /tmp/gluster-s3-storageclass.yaml | oc create -f  -
   register: debug_out
 - name: Show generated storageclass
   debug:
@@ -32,7 +51,7 @@
     msg: "{{ debug_out.stdout }}"
 
 - name: Provision PVCs
-  command: "sed -e 's/${VOLUME_CAPACITY}/2Gi/g'  -e  's/${STORAGE_CLASS}/gluster-s3-store/g'  /tmp/gluster-s3-pvcs.yaml |  oc create -f - "
+  shell: sed -e 's/${VOLUME_CAPACITY}/2Gi/g'  -e  's/${STORAGE_CLASS}/gluster-s3-store/g'  /tmp/gluster-s3-pvcs.yaml |  oc create -f -
   register: debug_out
 - name: Show generated pvc
   debug:
@@ -53,10 +72,10 @@
     msg: "{{ debug_out.stdout }}"
 
 - name: Provision template
-  command: "oc new-app  deploy/ocp-templates/gluster-s3-template.yaml \
+  command: oc new-app  /tmp/gluster-s3-template.yaml \
              --param=S3_ACCOUNT=testvolume  --param=S3_USER=adminuser \
              --param=S3_PASSWORD=itsmine --param=PVC=gluster-s3-claim \
-             --param=META_PVC=gluster-s3-meta-claim"
+             --param=META_PVC=gluster-s3-meta-claim
   register: debug_out
 - name: Show generated template
   debug:
