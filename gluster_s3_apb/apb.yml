@@ -7,7 +7,7 @@ metadata:
   displayName: GlusterFS S3 object service
 plans:
   - name: default
-    description: This plan deploys gluster-s3-apb
+    description: This plan deploys gluster-s3-apb. It runs using existing CNS cluster.
     free: True
     metadata: {}
     parameters: []
