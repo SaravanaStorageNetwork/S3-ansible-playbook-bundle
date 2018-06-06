@@ -6,6 +6,8 @@ Deploys a APB which provide S3 service using GlusterFS backend volume.
 ## Parameters
 * NAMESPACE: Optional, default 'glusterfs', Namespace to deploy the cluster in.
 
+It expects CNS cluster is setup and running.
+
 ## Running the application
 ```
 docker run --rm --net=host \
