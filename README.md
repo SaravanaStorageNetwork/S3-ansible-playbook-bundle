@@ -49,3 +49,4 @@ This helps in apb push:
 
 oc annotate route -n ansible-service-broker asb-1338 --overwrite haproxy.router.openshift.io/timeout=300s
 
+docker build -t 172.31.17.15:5000/openshift/gluster-s3-apb .
